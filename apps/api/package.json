@@ -1,0 +1,12 @@
+{
+  "name": "@nudge/api",
+  "version": "0.1.0",
+  "type": "module",
+  "imports": {
+    "@nudge/shared": "../../packages/shared/src/index.ts"
+  },
+  "scripts": {
+    "start": "node --experimental-strip-types src/server.ts",
+    "test": "node --experimental-strip-types --test test/api.test.ts"
+  }
+}

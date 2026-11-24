@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nudge - Habit Studio & Revision Queue</title>
+  <link rel="stylesheet" href="../styles/theme.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--nudge-bg);
+      color: var(--nudge-text-primary);
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .options-header {
+      background: var(--nudge-border);
+      padding: 1.5rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(66, 39, 1, 0.05);
+    }
+    .options-header .logo-group {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .options-header .buddy-badge {
+      font-size: 2.2rem;
+      background: var(--nudge-accent-soft);
+      width: 54px;
+      height: 54px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      box-shadow: 0 4px 12px rgba(66, 39, 1, 0.1);
+    }
+    .options-header h1 {
+      font-size: 1.6rem;
+      color: var(--nudge-text-primary);
+      margin: 0;
+      font-weight: 800;
+    }
+    .options-header p {
+      margin: 0.2rem 0 0;
+      font-size: 0.9rem;
+      color: var(--nudge-text-secondary);
+    }
+    .options-stats-bar {
+      display: flex;
+      gap: 1.5rem;
+    }
+    .stat-pill {
+      background: var(--nudge-bg);
+      border: 1px solid var(--nudge-border);
+      border-radius: 20px;
+      padding: 0.5rem 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--nudge-text-primary);
+    }
+    .options-main {
+      flex: 1;
+      max-width: 1200px;
+      width: 100%;
+      margin: 2rem auto;
+      padding: 0 2rem;
+      box-sizing: border-box;
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 2rem;
+    }
+    .options-card {
+      background: var(--nudge-card-bg);
+      border: 1px solid var(--nudge-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 14px rgba(66, 39, 1, 0.04);
+      margin-bottom: 2rem;
+    }
+    .card-title {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--nudge-text-primary);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .revision-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.85rem 1rem;
+      border-radius: 10px;
+      background: var(--nudge-bg);
+      border: 1px solid var(--nudge-border);
+      margin-bottom: 0.75rem;
+      transition: transform 0.15s ease;
+    }
+    .revision-item:hover {
+      transform: translateX(4px);
+    }
+    .revision-info h4 {
+      margin: 0;
+      font-size: 1rem;
+      color: var(--nudge-text-primary);
+    }
+    .revision-info span {
+      font-size: 0.8rem;
+      color: var(--nudge-text-secondary);
+    }
+    .difficulty-tag {
+      font-size: 0.72rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 6px;
+      font-weight: 700;
+      margin-left: 0.5rem;
+    }
+    .diff-easy { background: rgba(46, 125, 50, 0.15); color: #2e7d32; }
+    .diff-medium { background: rgba(230, 81, 0, 0.15); color: #e65100; }
+    .diff-hard { background: rgba(198, 40, 40, 0.15); color: #c62828; }
+    .btn-action {
+      background: var(--nudge-text-primary);
+      color: var(--nudge-bg);
+      border: none;
+      padding: 0.45rem 0.9rem;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn-action:hover {
+      opacity: 0.9;
+    }
+    .progress-bar-wrap {
+      margin-bottom: 1rem;
+    }
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+    .progress-track {
+      background: var(--nudge-bg);
+      border: 1px solid var(--nudge-border);
+      height: 10px;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      background: var(--nudge-accent-soft);
+      height: 100%;
+      border-radius: 5px;
+      transition: width 0.4s ease;
+    }
+    .journal-entry {
+      background: var(--nudge-bg);
+      border-left: 4px solid var(--nudge-accent-soft);
+      padding: 0.85rem 1rem;
+      border-radius: 4px 8px 8px 4px;
+      margin-bottom: 0.75rem;
+    }
+    .journal-q {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--nudge-text-primary);
+      margin-bottom: 0.3rem;
+    }
+    .journal-meta {
+      font-size: 0.75rem;
+      color: var(--nudge-text-secondary);
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+  <header class="options-header">
+    <div class="logo-group">
+      <div id="buddy-avatar-badge" class="buddy-badge">🐰</div>
+      <div>
+        <h1>Nudge Habit Studio</h1>
+        <p>Spaced Revision Queue, Pattern Mastery & Companion Preferences</p>
+      </div>
+    </div>
+    <div class="options-stats-bar">
+      <div class="stat-pill"><span id="streak-count">🔥 1 Day Streak</span></div>
+      <div class="stat-pill"><span id="solved-count">🏆 0 Solved</span></div>
+      <div class="stat-pill"><span id="journal-count">📖 0 Journal Entries</span></div>
+    </div>
+  </header>
+
+  <main class="options-main">
+    <!-- Left Column: Revision Queue & Mistake Journal -->
+    <div>
+      <div class="options-card">
+        <div class="card-title">
+          <span>📅 Spaced Revision Queue</span>
+          <span style="font-size:0.85rem; color:var(--nudge-text-secondary);">Retention intervals: 1d · 3d · 7d</span>
+        </div>
+        <div id="revision-list">
+          <!-- Populated by options.js -->
+        </div>
+      </div>
+
+      <div class="options-card">
+        <div class="card-title">
+          <span>📖 Mistake & Bottleneck Journal</span>
+          <span style="font-size:0.85rem; color:var(--nudge-text-secondary);">Self-review before each coding session</span>
+        </div>
+        <div id="journal-list">
+          <!-- Populated by options.js -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Pattern Mastery & Settings -->
+    <div>
+      <div class="options-card">
+        <div class="card-title">
+          <span>🎯 Pattern Mastery Radar</span>
+        </div>
+        <div id="pattern-bars">
+          <!-- Populated by options.js -->
+        </div>
+      </div>
+
+      <div class="options-card">
+        <div class="card-title">
+          <span>⚙️ Companion Preferences</span>
+        </div>
+        <form id="settings-form">
+          <label style="display:block; font-weight:700; font-size:0.85rem; margin-bottom:0.4rem;">Character Gender</label>
+          <div style="display:flex; gap:1rem; margin-bottom:1rem;">
+            <label><input type="radio" name="gender" value="female"> Female (Chloe, Maya, Tara)</label>
+            <label><input type="radio" name="gender" value="male"> Male (Neo, Alex, Kai)</label>
+          </div>
+
+          <label style="display:block; font-weight:700; font-size:0.85rem; margin-bottom:0.4rem;">Companion Persona</label>
+          <select id="persona-select" style="width:100%; padding:0.6rem; border-radius:8px; border:1px solid var(--nudge-border); background:var(--nudge-bg); font-family:inherit; margin-bottom:1rem;">
+            <option value="cheerleader">🐰 High-Energy Cheerleader</option>
+            <option value="mentor">🦁 Patient Mentor</option>
+            <option value="socratic">🦉 Socratic Inquirer</option>
+            <option value="zen_master">🌿 Zen Master</option>
+            <option value="strict_coach">📋 Strict Coach</option>
+          </select>
+
+          <label style="display:flex; align-items:center; gap:0.5rem; font-weight:700; font-size:0.85rem; margin-bottom:1.5rem; cursor:pointer;">
+            <input type="checkbox" id="tts-toggle">
+            <span>Voice Narration (Read hints aloud with Web Speech API)</span>
+          </label>
+
+          <button type="submit" class="btn-action" style="width:100%; text-align:center; padding:0.75rem;">Save Preferences</button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <script src="options.js"></script>
+</body>
+</html>

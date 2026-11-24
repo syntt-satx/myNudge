@@ -1,0 +1,28 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Start Nudge API Server",
+      "type": "node",
+      "request": "launch",
+      "runtimeArgs": ["--experimental-strip-types"],
+      "program": "${workspaceFolder}/apps/api/src/server.ts",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    },
+    {
+      "name": "Run All Tests",
+      "type": "node",
+      "request": "launch",
+      "runtimeArgs": ["--experimental-strip-types", "--test"],
+      "args": [
+        "${workspaceFolder}/packages/shared/test/shared.test.ts",
+        "${workspaceFolder}/apps/api/test/api.test.ts",
+        "${workspaceFolder}/apps/api/test/e2e-server.test.ts"
+      ],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal"
+    }
+  ]
+}

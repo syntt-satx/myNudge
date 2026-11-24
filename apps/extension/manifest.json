@@ -1,0 +1,62 @@
+{
+  "manifest_version": 3,
+  "name": "Nudge - AI Coding Buddy & Graded Hints",
+  "version": "1.0.0",
+  "description": "A supportive pair-programming buddy on LeetCode, GeeksforGeeks, and HackerRank that guides you through a strict 6-level hint ladder.",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "tabs"
+  ],
+  "host_permissions": [
+    "*://*.leetcode.com/*",
+    "*://*.geeksforgeeks.org/*",
+    "*://*.hackerrank.com/*"
+  ],
+  "background": {
+    "service_worker": "src/background/service-worker.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.leetcode.com/*",
+        "*://*.geeksforgeeks.org/*",
+        "*://*.hackerrank.com/*"
+      ],
+      "js": ["src/contents/content-script.js"],
+      "run_at": "document_end"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "src/injected/monaco-bridge.js",
+        "src/styles/theme.css"
+      ],
+      "matches": [
+        "*://*.leetcode.com/*",
+        "*://*.geeksforgeeks.org/*",
+        "*://*.hackerrank.com/*"
+      ]
+    }
+  ],
+  "action": {
+    "default_title": "Nudge Buddy",
+    "default_popup": "src/popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "options_ui": {
+    "page": "src/options/options.html",
+    "open_in_tab": true
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

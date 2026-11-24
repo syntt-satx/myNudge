@@ -1,0 +1,1225 @@
+/* ==========================================================================
+   NUDGE: High-End Cozy Vintage Earth-Tone Design System
+   Strict Palette:
+     --nudge-bg-canvas:     #C6C0B9  (Main Background Canvas / Soft Panels)
+     --nudge-accent-rose:   #D9BBB0  (Soft Rose / Accents & Active Badges)
+     --nudge-border:        #AD9C8E  (Neutral Taupe / Borders, Dividers)
+     --nudge-text-muted:    #705E46  (Medium Earth Brown / Secondary Text & Icons)
+     --nudge-espresso:      #422701  (Deep Espresso / Primary Text & Heavy Elements)
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:ital,wght@0,400;0,600;1,400&display=swap');
+
+:host, .nudge-root {
+  --nudge-bg-canvas: #C6C0B9;
+  --nudge-card-bg: #FFFFFF;
+  --nudge-card-warm: #EFEBE6;
+  --nudge-accent-rose: #D9BBB0;
+  --nudge-accent-rose-hover: #CEAAA0;
+  --nudge-border: #AD9C8E;
+  --nudge-border-subtle: rgba(173, 156, 142, 0.45);
+  --nudge-text-muted: #705E46;
+  --nudge-text-primary: #422701;
+  --nudge-espresso: #422701;
+  
+  --nudge-shadow-sm: 0 2px 8px rgba(66, 39, 1, 0.08);
+  --nudge-shadow-md: 0 8px 24px rgba(66, 39, 1, 0.12);
+  --nudge-shadow-lg: -16px 0 48px rgba(66, 39, 1, 0.16);
+  --nudge-shadow-avatar: 0 12px 32px rgba(66, 39, 1, 0.22);
+
+  --nudge-font: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --nudge-mono: 'JetBrains Mono', monospace;
+
+  font-family: var(--nudge-font);
+  color: var(--nudge-text-primary);
+  box-sizing: border-box;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* --------------------------------------------------------------------------
+   CRITICAL SCROLLBAR STYLING (No content clipping, clean earth-tone look)
+   -------------------------------------------------------------------------- */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--nudge-bg-canvas);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--nudge-text-muted);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--nudge-espresso);
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--nudge-text-muted) var(--nudge-bg-canvas);
+}
+
+/* --------------------------------------------------------------------------
+   View A: Floating Companion Buddy Avatar
+   -------------------------------------------------------------------------- */
+.nudge-buddy-avatar-wrap {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: var(--nudge-bg-canvas);
+  border: 3.5px solid #FFFFFF;
+  box-shadow: var(--nudge-shadow-avatar);
+  cursor: pointer;
+  user-select: none;
+  touch-action: none;
+  z-index: 2147483640;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+  contain: layout style paint;
+}
+
+.nudge-buddy-avatar-wrap:active {
+  transform: scale(0.95);
+}
+
+.nudge-buddy-inner {
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #EBE6E0 0%, var(--nudge-accent-rose) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  position: relative;
+  animation: nudge-breath 4.8s infinite ease-in-out;
+  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.6);
+}
+
+.nudge-buddy-status-dot {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #3E7B5C;
+  border: 2px solid #FFFFFF;
+  box-shadow: 0 0 6px rgba(62, 123, 92, 0.6);
+}
+
+.nudge-buddy-status-dot.concerned {
+  background: #C67D25;
+  box-shadow: 0 0 6px rgba(198, 125, 37, 0.6);
+}
+
+.nudge-speech-bubble {
+  position: absolute;
+  bottom: 86px;
+  right: 4px;
+  min-width: 220px;
+  max-width: 320px;
+  padding: 13px 17px;
+  background: #FFFFFF;
+  border: 1.5px solid var(--nudge-border);
+  border-radius: 18px;
+  border-bottom-right-radius: 4px;
+  box-shadow: var(--nudge-shadow-md);
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--nudge-text-primary);
+  pointer-events: auto;
+  opacity: 0;
+  transform: translateY(10px) scale(0.93);
+  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  font-weight: 500;
+}
+
+.nudge-speech-bubble.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* --------------------------------------------------------------------------
+   View B: Slide-out Console Drawer (40% - 44% width, UNCLIPPED SCROLLABLE)
+   -------------------------------------------------------------------------- */
+.nudge-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: clamp(420px, 42vw, 600px);
+  height: 100vh;
+  max-height: 100vh;
+  background: var(--nudge-bg-canvas);
+  border-left: 2px solid var(--nudge-border);
+  box-shadow: var(--nudge-shadow-lg);
+  z-index: 2147483645;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(105%);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+.nudge-drawer.open {
+  transform: translateX(0%);
+}
+
+/* Drawer Header */
+.nudge-header {
+  padding: 18px 24px;
+  background: #FFFFFF;
+  border-bottom: 1.5px solid var(--nudge-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.nudge-brand {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.nudge-brand-avatar {
+  font-size: 28px;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--nudge-accent-rose);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--nudge-shadow-sm);
+}
+
+.nudge-brand-text h2 {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--nudge-text-primary);
+  letter-spacing: -0.02em;
+}
+
+.nudge-brand-text p {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--nudge-text-muted);
+}
+
+.nudge-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nudge-streak-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--nudge-card-warm);
+  border: 1px solid var(--nudge-border);
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--nudge-text-primary);
+}
+
+.nudge-icon-btn {
+  background: none;
+  border: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--nudge-text-muted);
+  font-size: 16px;
+  transition: all 0.15s ease;
+}
+
+.nudge-icon-btn:hover {
+  background: var(--nudge-card-warm);
+  color: var(--nudge-text-primary);
+}
+
+/* --------------------------------------------------------------------------
+   6-Level Milestone Progress Bar
+   -------------------------------------------------------------------------- */
+.nudge-ladder-wrap {
+  padding: 14px 24px;
+  background: var(--nudge-card-warm);
+  border-bottom: 1.5px solid var(--nudge-border);
+  flex-shrink: 0;
+}
+
+.nudge-ladder-track {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+}
+
+.nudge-ladder-line {
+  position: absolute;
+  top: 50%;
+  left: 16px;
+  right: 16px;
+  height: 3px;
+  background: var(--nudge-border);
+  z-index: 1;
+  transform: translateY(-50%);
+}
+
+.nudge-ladder-node {
+  position: relative;
+  z-index: 2;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  border: 2px solid var(--nudge-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--nudge-text-muted);
+  cursor: pointer;
+  transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 2px 5px rgba(66, 39, 1, 0.06);
+}
+
+.nudge-ladder-node.completed {
+  background: var(--nudge-espresso);
+  border-color: var(--nudge-espresso);
+  color: #FFFFFF;
+  transform: scale(1.04);
+}
+
+.nudge-ladder-node.active {
+  background: #FFFFFF;
+  border-color: var(--nudge-espresso);
+  color: var(--nudge-espresso);
+  box-shadow: 0 0 0 4.5px rgba(217, 187, 176, 0.9);
+  transform: scale(1.12);
+}
+
+.nudge-ladder-node.locked {
+  background: var(--nudge-bg-canvas);
+  border-color: var(--nudge-border);
+  color: var(--nudge-text-muted);
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+.nudge-ladder-node.last-resort {
+  border-color: #8C473A;
+  color: #8C473A;
+}
+
+/* --------------------------------------------------------------------------
+   Hint Card & Content Body (FULL SCROLL, ZERO CLIPPING)
+   -------------------------------------------------------------------------- */
+.nudge-body {
+  flex: 1 1 auto;
+  overflow-y: auto !important;
+  overflow-x: hidden;
+  padding: 20px 24px 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 0;
+  max-height: calc(100vh - 145px);
+  scrollbar-width: thin;
+  scrollbar-color: var(--nudge-text-muted) var(--nudge-bg-canvas);
+}
+
+.nudge-body::-webkit-scrollbar {
+  width: 8px;
+  display: block;
+}
+
+.nudge-body::-webkit-scrollbar-track {
+  background: var(--nudge-bg-canvas);
+  border-radius: 4px;
+}
+
+.nudge-body::-webkit-scrollbar-thumb {
+  background: var(--nudge-text-muted);
+  border-radius: 4px;
+}
+
+.nudge-body::-webkit-scrollbar-thumb:hover {
+  background: var(--nudge-espresso);
+}
+
+.nudge-card {
+  background: #FFFFFF;
+  border: 1.5px solid var(--nudge-border);
+  border-radius: 20px;
+  padding: 22px;
+  box-shadow: var(--nudge-shadow-sm);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  height: auto;
+  min-height: min-content;
+  overflow: visible;
+}
+
+.nudge-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nudge-badge-level {
+  background: var(--nudge-accent-rose);
+  color: var(--nudge-text-primary);
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 4px 11px;
+  border-radius: 8px;
+}
+
+.nudge-badge-difficulty {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 6px;
+  border: 1px solid var(--nudge-border);
+  color: var(--nudge-text-muted);
+}
+
+.nudge-hint-prose {
+  font-size: 14.5px;
+  line-height: 1.68;
+  color: var(--nudge-text-primary);
+  font-weight: 500;
+  word-break: break-word;
+}
+
+.nudge-hint-subheading {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--nudge-espresso);
+  margin: 10px 0 10px 0;
+  display: block;
+  letter-spacing: -0.2px;
+}
+
+.nudge-hint-heading {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--nudge-espresso);
+  margin: 12px 0 10px 0;
+  display: block;
+}
+
+.nudge-callout-quote {
+  background: rgba(217, 187, 176, 0.25);
+  border-left: 3px solid var(--nudge-accent-rose);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin: 12px 0;
+  font-style: italic;
+  color: var(--nudge-espresso);
+}
+
+.nudge-hint-list {
+  margin: 8px 0 14px 22px;
+  line-height: 1.65;
+  color: var(--nudge-text-primary);
+}
+
+.nudge-hint-list li {
+  margin-bottom: 6px;
+}
+
+.nudge-hint-prose p {
+  margin-bottom: 12px;
+}
+
+.nudge-hint-prose p:last-child {
+  margin-bottom: 0;
+}
+
+/* Concrete Examples Table */
+.nudge-example-box {
+  background: var(--nudge-card-warm);
+  border: 1px solid var(--nudge-border);
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin: 10px 0;
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+
+.nudge-example-box table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+  font-size: 12.5px;
+}
+
+.nudge-example-box th, .nudge-example-box td {
+  padding: 6px 10px;
+  text-align: left;
+  border-bottom: 1px solid var(--nudge-border);
+}
+
+.nudge-example-box th {
+  color: var(--nudge-text-muted);
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+/* Interactive Checkpoint Cards (Level 2 & 4 Interactive Quiz) */
+.nudge-checkpoint-box {
+  background: #FAF7F2;
+  border: 2px solid var(--nudge-border);
+  border-radius: 16px;
+  padding: 16px 18px;
+  margin: 12px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.nudge-checkpoint-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  font-weight: 800;
+  color: var(--nudge-espresso);
+}
+
+.nudge-checkpoint-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.nudge-choice-btn {
+  background: #FFFFFF;
+  border: 1.5px solid var(--nudge-border);
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-family: var(--nudge-font);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--nudge-text-primary);
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nudge-choice-btn:hover {
+  background: var(--nudge-card-warm);
+  border-color: var(--nudge-espresso);
+  transform: translateX(2px);
+}
+
+.nudge-choice-btn.selected-correct {
+  background: #E8F2EC;
+  border-color: #3E7B5C;
+  color: #24583E;
+  font-weight: 700;
+}
+
+.nudge-choice-btn.selected-incorrect {
+  background: #F9EBE9;
+  border-color: #A84742;
+  color: #7D2824;
+}
+
+.nudge-checkpoint-feedback {
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  display: none;
+}
+
+.nudge-checkpoint-feedback.correct {
+  display: block;
+  background: #E8F2EC;
+  color: #24583E;
+  border: 1px solid #3E7B5C;
+}
+
+.nudge-checkpoint-feedback.incorrect {
+  display: block;
+  background: #F9EBE9;
+  color: #7D2824;
+  border: 1px solid #A84742;
+}
+
+/* Pointer Diagram Walkthrough Box (Level 4) */
+.nudge-diagram-box {
+  background: #2D231F;
+  color: #F7F3EE;
+  font-family: var(--nudge-mono);
+  padding: 14px 18px;
+  border-radius: 14px;
+  font-size: 12.5px;
+  line-height: 1.6;
+  overflow-x: auto;
+  border: 1px solid var(--nudge-espresso);
+  margin: 10px 0;
+}
+
+/* Code Blocks & Previews (FULL SCROLL, NO HIDDEN LINES) */
+.nudge-code-block {
+  font-family: var(--nudge-mono);
+  background: #2D231F;
+  color: #F7F3EE;
+  padding: 16px 18px;
+  border-radius: 14px;
+  font-size: 13px;
+  line-height: 1.6;
+  margin: 12px 0;
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 480px;
+  border: 1.5px solid var(--nudge-espresso);
+  white-space: pre;
+}
+
+.nudge-code-block::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+  display: block;
+}
+
+.nudge-code-block::-webkit-scrollbar-track {
+  background: #221a16;
+  border-radius: 4px;
+}
+
+.nudge-code-block::-webkit-scrollbar-thumb {
+  background: #705E46;
+  border-radius: 4px;
+}
+
+.nudge-code-block::-webkit-scrollbar-thumb:hover {
+  background: #AD9C8E;
+}
+
+.nudge-inline-code {
+  font-family: var(--nudge-mono);
+  background: var(--nudge-card-warm);
+  color: var(--nudge-espresso);
+  padding: 2px 7px;
+  border-radius: 6px;
+  font-size: 12.5px;
+  border: 1px solid var(--nudge-border);
+}
+
+/* Level 6 Blur Gate */
+.nudge-blur-container {
+  position: relative;
+  min-height: 240px;
+}
+
+.nudge-blur-shield {
+  filter: blur(8px);
+  user-select: none;
+  pointer-events: none;
+  opacity: 0.35;
+}
+
+.nudge-blur-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(198, 192, 185, 0.92);
+  backdrop-filter: blur(4px);
+  border-radius: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  text-align: center;
+  gap: 12px;
+}
+
+.nudge-blur-overlay h3 {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--nudge-text-primary);
+}
+
+.nudge-blur-overlay p {
+  font-size: 13px;
+  color: var(--nudge-text-muted);
+  max-width: 290px;
+  line-height: 1.5;
+}
+
+/* Line-by-Line Breakdown */
+.nudge-line-breakdown {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.nudge-line-item {
+  background: var(--nudge-card-warm);
+  border: 1px solid var(--nudge-border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+.nudge-line-item b {
+  color: var(--nudge-espresso);
+  font-family: var(--nudge-mono);
+  display: block;
+  margin-bottom: 4px;
+}
+
+/* Complexity Summary Card at End of Level 6 */
+.nudge-complexity-box {
+  background: #F4EFEB;
+  border: 1.5px solid var(--nudge-border);
+  border-radius: 14px;
+  padding: 14px 18px;
+  margin-top: 16px;
+}
+
+.nudge-complexity-title {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--nudge-text-muted);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.nudge-complexity-details {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--nudge-text-primary);
+}
+
+/* Alternative Approaches Accordion */
+.nudge-alt-section {
+  margin-top: 14px;
+  border-top: 1px dashed var(--nudge-border);
+  padding-top: 14px;
+}
+
+.nudge-alt-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--nudge-font);
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--nudge-text-primary);
+}
+
+.nudge-alt-content {
+  margin-top: 10px;
+  padding: 14px;
+  background: var(--nudge-card-warm);
+  border-radius: 14px;
+  border: 1px solid var(--nudge-border);
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--nudge-text-primary);
+}
+
+/* Similar Recommendations */
+.nudge-similar-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.nudge-similar-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: #FFFFFF;
+  border: 1px solid var(--nudge-border);
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--nudge-text-primary);
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.nudge-similar-item:hover {
+  background: var(--nudge-accent-rose);
+  border-color: var(--nudge-espresso);
+  transform: translateX(3px);
+}
+
+/* --------------------------------------------------------------------------
+   Action Buttons (Strict Palette: #422701 & #D9BBB0)
+   -------------------------------------------------------------------------- */
+.nudge-actions-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 6px;
+  flex-shrink: 0;
+}
+
+.nudge-btn-primary {
+  background: var(--nudge-espresso);
+  color: var(--nudge-bg-canvas);
+  border: none;
+  border-radius: 16px;
+  padding: 14px 20px;
+  font-family: var(--nudge-font);
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(66, 39, 1, 0.18);
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nudge-btn-primary:hover {
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 6px 20px rgba(66, 39, 1, 0.26);
+  background: #331D00;
+}
+
+.nudge-btn-secondary {
+  background: var(--nudge-accent-rose);
+  color: var(--nudge-text-primary);
+  border: 1.5px solid var(--nudge-border);
+  border-radius: 16px;
+  padding: 12px 18px;
+  font-family: var(--nudge-font);
+  font-size: 13.5px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.nudge-btn-secondary:hover {
+  background: var(--nudge-accent-rose-hover);
+  border-color: var(--nudge-espresso);
+  transform: translateY(-1px);
+}
+
+/* --------------------------------------------------------------------------
+   Rotating Motivation Bar Footer
+   -------------------------------------------------------------------------- */
+.nudge-footer-bar {
+  padding: 14px 22px;
+  background: var(--nudge-card-warm);
+  border-top: 1.5px solid var(--nudge-border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--nudge-text-muted);
+  line-height: 1.4;
+  flex-shrink: 0;
+}
+
+.nudge-footer-icon {
+  font-size: 18px;
+  animation: nudge-sparkle 2.5s infinite ease;
+}
+
+/* --------------------------------------------------------------------------
+   Bento-Grid Dashboard & Customization Modal
+   -------------------------------------------------------------------------- */
+.nudge-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(66, 39, 1, 0.45);
+  backdrop-filter: blur(4px);
+  z-index: 2147483647;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.nudge-modal-backdrop.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.nudge-bento-dialog {
+  width: min(860px, 94vw);
+  max-height: 88vh;
+  background: var(--nudge-bg-canvas);
+  border: 2px solid var(--nudge-border);
+  border-radius: 28px;
+  box-shadow: 0 24px 64px rgba(66, 39, 1, 0.35);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transform: scale(0.96) translateY(12px);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nudge-modal-backdrop.open .nudge-bento-dialog {
+  transform: scale(1) translateY(0);
+}
+
+.nudge-bento-header {
+  padding: 20px 28px;
+  background: #FFFFFF;
+  border-bottom: 1.5px solid var(--nudge-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.nudge-bento-header h2 {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--nudge-text-primary);
+}
+
+.nudge-bento-grid {
+  padding: 24px;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 16px;
+}
+
+.nudge-bento-card {
+  background: #FFFFFF;
+  border: 1.5px solid var(--nudge-border);
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: var(--nudge-shadow-sm);
+}
+
+.nudge-bento-col-4 { grid-column: span 4; }
+.nudge-bento-col-6 { grid-column: span 6; }
+.nudge-bento-col-8 { grid-column: span 8; }
+.nudge-bento-col-12 { grid-column: span 12; }
+
+@media (max-width: 680px) {
+  .nudge-bento-col-4,
+  .nudge-bento-col-6,
+  .nudge-bento-col-8 {
+    grid-column: span 12;
+  }
+}
+
+.nudge-stat-large {
+  font-size: 38px;
+  font-weight: 800;
+  color: var(--nudge-text-primary);
+  line-height: 1.1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nudge-badge-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.nudge-badge-item {
+  padding: 12px;
+  border-radius: 14px;
+  background: var(--nudge-card-warm);
+  border: 1px solid var(--nudge-border);
+  text-align: center;
+}
+
+.nudge-badge-item.unlocked {
+  background: var(--nudge-accent-rose);
+  border-color: var(--nudge-espresso);
+}
+
+/* Mistake Journal in Bento Modal */
+.nudge-journal-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.nudge-journal-entry {
+  background: var(--nudge-card-warm);
+  border: 1px solid var(--nudge-border);
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 12.5px;
+}
+
+.nudge-journal-entry b {
+  color: var(--nudge-espresso);
+  display: block;
+  margin-bottom: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   3D Pop Emoji Particle Canvas
+   -------------------------------------------------------------------------- */
+.nudge-floating-emoji {
+  position: fixed;
+  font-size: 34px;
+  pointer-events: none;
+  z-index: 2147483646;
+  animation: nudge-pop-float 1.4s cubic-bezier(0.12, 0.8, 0.32, 1) forwards;
+  filter: drop-shadow(0 6px 12px rgba(66, 39, 1, 0.25));
+}
+
+/* --------------------------------------------------------------------------
+   Animations
+   -------------------------------------------------------------------------- */
+@keyframes nudge-breath {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.04) rotate(1.5deg); }
+}
+
+@keyframes nudge-sparkle {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.18) rotate(12deg); }
+}
+
+@keyframes nudge-pop-float {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.4) translateY(0);
+  }
+  20% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.2) translateY(-20px);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1) translateY(-90px);
+  }
+}
+
+@keyframes nudge-shake {
+  0%, 100% { transform: translateX(0); }
+  25%, 75% { transform: translateX(-6px); }
+  50% { transform: translateX(6px); }
+}
+
+.nudge-shake {
+  animation: nudge-shake 0.38s ease;
+}
+
+/* --------------------------------------------------------------------------
+   Header Solved Pill & Problem Completion Card
+   -------------------------------------------------------------------------- */
+.nudge-solved-header-pill {
+  background: var(--nudge-card-warm);
+  border: 1px solid var(--nudge-border);
+  border-radius: 999px;
+  padding: 3px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--nudge-espresso);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.nudge-completion-card {
+  background: #FFFFFF;
+  border: 1.5px solid var(--nudge-border);
+  border-radius: 18px;
+  padding: 16px 18px;
+  margin-top: 18px;
+  box-shadow: var(--nudge-shadow-sm);
+}
+
+.nudge-completion-card.solved {
+  background: #F4F7F4;
+  border-color: #3E7B5C;
+}
+
+.nudge-completion-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.nudge-completion-icon {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.nudge-completion-title {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: var(--nudge-espresso);
+}
+
+.nudge-completion-sub {
+  font-size: 11.5px;
+  color: var(--nudge-text-muted);
+  line-height: 1.45;
+  margin-top: 2px;
+}
+
+.nudge-btn-solve-complete {
+  width: 100%;
+  margin-top: 14px;
+  background: var(--nudge-espresso);
+  color: #FFFFFF;
+  padding: 12px 18px;
+  border-radius: 12px;
+  font-size: 13.5px;
+  font-weight: 800;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 14px rgba(66, 39, 1, 0.22);
+  transition: transform 0.15s, background 0.15s;
+}
+
+.nudge-btn-solve-complete:hover {
+  transform: translateY(-1px);
+  background: #2A1700;
+}
+
+.nudge-badge-solved {
+  background: #E8F5E9;
+  color: #2E7D32;
+  border: 1px solid #C8E6C9;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 11.5px;
+  font-weight: 800;
+}
+
+/* --------------------------------------------------------------------------
+   Simpler Angle & Real-World Analogy Rephrase Card
+   -------------------------------------------------------------------------- */
+.nudge-rephrase-card {
+  background: #FBF8F5;
+  border: 1.5px solid var(--nudge-accent-rose);
+  border-radius: 16px;
+  padding: 14px 16px;
+  margin: 14px 0;
+  box-shadow: var(--nudge-shadow-sm);
+}
+
+.nudge-rephrase-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.nudge-rephrase-body {
+  font-size: 12.5px;
+  color: var(--nudge-text-primary);
+}
+
+.nudge-rephrase-analogy {
+  background: #FFFFFF;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--nudge-border);
+}
+
+.nudge-rephrase-angle {
+  background: #FFFFFF;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--nudge-border);
+}
+
+.nudge-rephrase-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--nudge-border);
+}
+
+.nudge-badge-count {
+  background: var(--nudge-card-warm);
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  border: 1px solid var(--nudge-border);
+}
+
+.nudge-actions-grid .active-stuck {
+  background: var(--nudge-accent-rose) !important;
+  color: var(--nudge-espresso) !important;
+  font-weight: 800;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nudge-buddy-inner,
+  .nudge-drawer,
+  .nudge-floating-emoji,
+  .nudge-shake {
+    animation: none !important;
+    transition: none !important;
+  }
+}
